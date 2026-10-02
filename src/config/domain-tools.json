@@ -1,0 +1,57 @@
+[
+  {
+    "id": "domain-calculation",
+    "title": "Juror attendance compensation",
+    "operation": "jurypay",
+    "example": {
+      "ruleSource": "Fictional demonstration rule v1; replace with reviewed applicable terms",
+      "serviceDays": 3,
+      "dailyCents": 5000,
+      "travelMiles": 24,
+      "mileageCents": 70,
+      "priorPaidCents": 0
+    },
+    "description": "Compute service and travel compensation from entered court rates; does not select jurors or execute payments."
+  },
+  {
+    "id": "evidence-check",
+    "operation": "evidence",
+    "title": "Jury Term evidence checklist",
+    "description": "Check source presence against an explicitly supplied document list; reviewer assesses adequacy.",
+    "example": {
+      "requirements": [
+        {
+          "id": "source-1",
+          "requirement": "Juror Record evidence",
+          "evidence": "Example source reference"
+        },
+        {
+          "id": "source-2",
+          "requirement": "Reviewed rule version",
+          "evidence": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "deadline-check",
+    "operation": "deadlines",
+    "title": "Operational deadline queue",
+    "description": "Compute overdue items from entered dates and completed flags; no external notifications.",
+    "example": {
+      "asOf": "2026-10-20T12:00:00Z",
+      "items": [
+        {
+          "id": "review-1",
+          "dueAt": "2026-10-18T00:00:00Z",
+          "completed": false
+        },
+        {
+          "id": "follow-up-1",
+          "dueAt": "2026-10-23T00:00:00Z",
+          "completed": false
+        }
+      ]
+    }
+  }
+]

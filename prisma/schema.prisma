@@ -1,0 +1,365 @@
+// Generated schema — modeled after beautyhqio conventions.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  active       Boolean @default(true)
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(ANALYST)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  ANALYST
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actorName String?
+  action    String
+  entity    String
+  entityId  String?
+  detail    String?
+  createdAt DateTime @default(now())
+}
+
+model WorkflowAnalysis {
+ id String @id @default(cuid())
+ actorId String
+ workflow String
+ subjectEntity String
+ subjectId String
+ input Json
+ evidence Json
+ evidenceHash String
+ result Json
+ model String
+ receipt String?
+ createdAt DateTime @default(now())
+ @@index([workflow, createdAt])
+}
+model RecordReview {
+ id String @id @default(cuid())
+ actorId String
+ entity String
+ entityId String
+ version String
+ reason String
+ createdAt DateTime @default(now())
+ @@unique([entity, entityId, version, actorId])
+}
+model UsageBucket {
+ id String @id
+ calls Int
+}
+model IssuedCredential {
+ token String @id
+ entity String
+ entityId String
+ version String
+ assertion Json
+ createdAt DateTime @default(now())
+ revokedAt DateTime?
+ @@index([entity, entityId, createdAt])
+}
+
+model DomainArtifact {
+ id String @id @default(cuid())
+ subjectEntity String
+ subjectId String
+ title String
+ content String
+ contentHash String
+ actorId String
+ approvedBy String?
+ createdAt DateTime @default(now())
+ @@index([subjectEntity, subjectId])
+}
+
+model RecordApproval {
+ id String @id
+ version String
+}
+model DomainExecution {
+ id String @id
+ actorId String
+ connectorId String
+ action String
+ subjectEntity String
+ subjectId String
+ version String
+ status String
+ result Json?
+ createdAt DateTime @default(now())
+}
+
+model WorkSession {
+ id String @id @default(cuid())
+ actorId String
+ respondentId String
+ subjectEntity String
+ subjectId String
+ questions Json
+ answers Json
+ currentQuestion String?
+ status String
+ deadline DateTime
+ createdAt DateTime @default(now())
+ @@index([respondentId, createdAt])
+}
+model SessionMedia {
+ id String @id @default(cuid())
+ sessionId String
+ questionId String
+ actorId String
+ contentType String
+ bytes Bytes
+ contentHash String
+ createdAt DateTime @default(now())
+ @@index([sessionId])
+}
+
+model AppSetting {
+ id String @id
+ value Json
+ updatedAt DateTime @updatedAt
+}
+
+model JuryTerm {
+ id String @id @default(cuid())
+ name String
+ court String
+ termNumber String
+ startAt DateTime
+ endAt DateTime
+ clerk String
+ status String @default("Draft")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ inverseJurorRecord_juryTermId JurorRecord[] @relation("JurorRecord_juryTermId")
+ inverseJurorQuestionnaire_juryTermId JurorQuestionnaire[] @relation("JurorQuestionnaire_juryTermId")
+ inverseSummonsBatch_juryTermId SummonsBatch[] @relation("SummonsBatch_juryTermId")
+ inverseJurorSummons_juryTermId JurorSummons[] @relation("JurorSummons_juryTermId")
+ inverseServiceRequest_juryTermId ServiceRequest[] @relation("ServiceRequest_juryTermId")
+ inverseClerkDecision_juryTermId ClerkDecision[] @relation("ClerkDecision_juryTermId")
+ inverseJurorAttendance_juryTermId JurorAttendance[] @relation("JurorAttendance_juryTermId")
+ inverseJurorPayment_juryTermId JurorPayment[] @relation("JurorPayment_juryTermId")
+ inverseOperationalTask_juryTermId OperationalTask[] @relation("OperationalTask_juryTermId")
+ inverseRuleVersion_juryTermId RuleVersion[] @relation("RuleVersion_juryTermId")
+ inverseDocumentRequirement_juryTermId DocumentRequirement[] @relation("DocumentRequirement_juryTermId")
+}
+
+model JurorRecord {
+ id String @id @default(cuid())
+ name String
+ jurorNumber String
+ contactReference String
+ availabilityNotes String
+ questionnaireAt DateTime?
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedJuryTermId JuryTerm @relation("JurorRecord_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+ inverseJurorQuestionnaire_jurorRecordId JurorQuestionnaire[] @relation("JurorQuestionnaire_jurorRecordId")
+ inverseJurorSummons_jurorRecordId JurorSummons[] @relation("JurorSummons_jurorRecordId")
+ inverseServiceRequest_jurorRecordId ServiceRequest[] @relation("ServiceRequest_jurorRecordId")
+ inverseJurorAttendance_jurorRecordId JurorAttendance[] @relation("JurorAttendance_jurorRecordId")
+ inverseJurorPayment_jurorRecordId JurorPayment[] @relation("JurorPayment_jurorRecordId")
+}
+
+model JurorQuestionnaire {
+ id String @id @default(cuid())
+ title String
+ jurorRecordId String
+ receivedAt DateTime
+ responses String
+ evidence String
+ clerkNotes String
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedJurorRecordId JurorRecord @relation("JurorQuestionnaire_jurorRecordId", fields: [jurorRecordId], references: [id], onDelete: Restrict)
+ linkedJuryTermId JuryTerm @relation("JurorQuestionnaire_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+}
+
+model SummonsBatch {
+ id String @id @default(cuid())
+ title String
+ batchNumber String
+ serviceAt DateTime
+ location String
+ instructions String
+ issuedAt DateTime
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedJuryTermId JuryTerm @relation("SummonsBatch_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+ inverseJurorSummons_summonsBatchId JurorSummons[] @relation("JurorSummons_summonsBatchId")
+}
+
+model JurorSummons {
+ id String @id @default(cuid())
+ title String
+ jurorRecordId String
+ summonsBatchId String
+ noticeReference String
+ deliveredAt DateTime?
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedJurorRecordId JurorRecord @relation("JurorSummons_jurorRecordId", fields: [jurorRecordId], references: [id], onDelete: Restrict)
+ linkedSummonsBatchId SummonsBatch @relation("JurorSummons_summonsBatchId", fields: [summonsBatchId], references: [id], onDelete: Restrict)
+ linkedJuryTermId JuryTerm @relation("JurorSummons_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+}
+
+model ServiceRequest {
+ id String @id @default(cuid())
+ title String
+ jurorRecordId String
+ requestType String
+ requestedAt DateTime
+ reason String
+ requestedDate DateTime?
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedJurorRecordId JurorRecord @relation("ServiceRequest_jurorRecordId", fields: [jurorRecordId], references: [id], onDelete: Restrict)
+ linkedJuryTermId JuryTerm @relation("ServiceRequest_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+ inverseClerkDecision_serviceRequestId ClerkDecision[] @relation("ClerkDecision_serviceRequestId")
+}
+
+model ClerkDecision {
+ id String @id @default(cuid())
+ title String
+ serviceRequestId String
+ clerk String
+ decidedAt DateTime
+ decision String
+ rationale String
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedServiceRequestId ServiceRequest @relation("ClerkDecision_serviceRequestId", fields: [serviceRequestId], references: [id], onDelete: Restrict)
+ linkedJuryTermId JuryTerm @relation("ClerkDecision_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+}
+
+model JurorAttendance {
+ id String @id @default(cuid())
+ title String
+ jurorRecordId String
+ servedAt DateTime
+ hours Float
+ travelMiles Float
+ attendanceEvidence String
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedJurorRecordId JurorRecord @relation("JurorAttendance_jurorRecordId", fields: [jurorRecordId], references: [id], onDelete: Restrict)
+ linkedJuryTermId JuryTerm @relation("JurorAttendance_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+}
+
+model JurorPayment {
+ id String @id @default(cuid())
+ title String
+ jurorRecordId String
+ serviceCents Int
+ travelCents Int
+ paidAt DateTime?
+ receipt String?
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedJurorRecordId JurorRecord @relation("JurorPayment_jurorRecordId", fields: [jurorRecordId], references: [id], onDelete: Restrict)
+ linkedJuryTermId JuryTerm @relation("JurorPayment_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+}
+
+model OperationalTask {
+ id String @id @default(cuid())
+ title String
+ owner String
+ priority String
+ startAt DateTime
+ dueAt DateTime
+ done Boolean
+ notes String?
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedJuryTermId JuryTerm @relation("OperationalTask_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+}
+
+model RuleVersion {
+ id String @id @default(cuid())
+ title String
+ jurisdiction String
+ version String
+ effectiveAt DateTime
+ expiresAt DateTime?
+ sourceUrl String
+ requirementText String
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedJuryTermId JuryTerm @relation("RuleVersion_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+}
+
+model DocumentRequirement {
+ id String @id @default(cuid())
+ title String
+ category String
+ requiredBy DateTime
+ sourceReference String
+ evidenceReference String?
+ reviewNotes String?
+ status String @default("Draft")
+ juryTermId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([juryTermId])
+ linkedJuryTermId JuryTerm @relation("DocumentRequirement_juryTermId", fields: [juryTermId], references: [id], onDelete: Restrict)
+}

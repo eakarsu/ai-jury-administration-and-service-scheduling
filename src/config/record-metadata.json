@@ -1,0 +1,605 @@
+{
+  "JuryTerm": {
+    "name": "JuryTerm",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "court",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "termNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "startAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "endAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "clerk",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      }
+    ]
+  },
+  "JurorRecord": {
+    "name": "JurorRecord",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurorNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "contactReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "availabilityNotes",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "questionnaireAt",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  },
+  "JurorQuestionnaire": {
+    "name": "JurorQuestionnaire",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurorRecordId",
+        "kind": "string",
+        "required": true,
+        "relation": "JurorRecord"
+      },
+      {
+        "name": "receivedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "responses",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "clerkNotes",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  },
+  "SummonsBatch": {
+    "name": "SummonsBatch",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "batchNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "serviceAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "location",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "instructions",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "issuedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  },
+  "JurorSummons": {
+    "name": "JurorSummons",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurorRecordId",
+        "kind": "string",
+        "required": true,
+        "relation": "JurorRecord"
+      },
+      {
+        "name": "summonsBatchId",
+        "kind": "string",
+        "required": true,
+        "relation": "SummonsBatch"
+      },
+      {
+        "name": "noticeReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "deliveredAt",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  },
+  "ServiceRequest": {
+    "name": "ServiceRequest",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurorRecordId",
+        "kind": "string",
+        "required": true,
+        "relation": "JurorRecord"
+      },
+      {
+        "name": "requestType",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requestedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "reason",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requestedDate",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  },
+  "ClerkDecision": {
+    "name": "ClerkDecision",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "serviceRequestId",
+        "kind": "string",
+        "required": true,
+        "relation": "ServiceRequest"
+      },
+      {
+        "name": "clerk",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "decidedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "decision",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "rationale",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  },
+  "JurorAttendance": {
+    "name": "JurorAttendance",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurorRecordId",
+        "kind": "string",
+        "required": true,
+        "relation": "JurorRecord"
+      },
+      {
+        "name": "servedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "hours",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "travelMiles",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "attendanceEvidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  },
+  "JurorPayment": {
+    "name": "JurorPayment",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurorRecordId",
+        "kind": "string",
+        "required": true,
+        "relation": "JurorRecord"
+      },
+      {
+        "name": "serviceCents",
+        "kind": "number",
+        "required": true,
+        "integer": true,
+        "min": 0
+      },
+      {
+        "name": "travelCents",
+        "kind": "number",
+        "required": true,
+        "integer": true,
+        "min": 0
+      },
+      {
+        "name": "paidAt",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "receipt",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  },
+  "OperationalTask": {
+    "name": "OperationalTask",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "owner",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "priority",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "startAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "dueAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "done",
+        "kind": "boolean",
+        "required": true
+      },
+      {
+        "name": "notes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  },
+  "RuleVersion": {
+    "name": "RuleVersion",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurisdiction",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "version",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "effectiveAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "expiresAt",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "sourceUrl",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requirementText",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  },
+  "DocumentRequirement": {
+    "name": "DocumentRequirement",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "category",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requiredBy",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "sourceReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidenceReference",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "reviewNotes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "juryTermId",
+        "kind": "string",
+        "required": true,
+        "relation": "JuryTerm"
+      }
+    ],
+    "parent": {
+      "entity": "JuryTerm",
+      "field": "juryTermId"
+    }
+  }
+}
