@@ -18,8 +18,12 @@ export async function GET(request: NextRequest, context: Context) {
     const pageSize = Number(params.get("pageSize") || 20);
     if (!Number.isInteger(page) || page < 1 || page > 100000 || !Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) throw new RequestError("Invalid page or page size", 400);
     const search = (params.get("q") || "").slice(0, 200);
+    const status = (params.get("status") || "").slice(0, 100);
     const searchFields = recordMetadata[entity].fields.filter(f => f.kind === "string");
-    const where = search && searchFields.length ? { OR: searchFields.map(f => ({ [f.name]: { contains: search, mode: "insensitive" } })) } : {};
+    const clauses: Record<string, unknown>[] = [];
+    if (search && searchFields.length) clauses.push({ OR: searchFields.map(f => ({ [f.name]: { contains: search, mode: "insensitive" } })) });
+    if (status && recordMetadata[entity].fields.some(f => f.name === "status")) clauses.push({ status });
+    const where = clauses.length > 1 ? { AND: clauses } : (clauses[0] ?? {});
     const [rows, total] = await prisma.$transaction([
       // Dynamic delegates remain Prisma promises at runtime.
       client.findMany({ where, orderBy: [{ createdAt: "desc" }, { id: "desc" }], skip: (page - 1) * pageSize, take: pageSize }) as Prisma.PrismaPromise<unknown>,
